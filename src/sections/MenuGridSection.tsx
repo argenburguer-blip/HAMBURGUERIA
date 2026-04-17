@@ -1,171 +1,206 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+﻿const IFOOD_URL =
+  'https://www.ifood.com.br/delivery/saquarema-rj/argenburguer-vilatur/a904738d-556b-4e20-b1b1-b63444e84e07?UTM_Medium=share';
 
 interface MenuItem {
   id: number;
   name: string;
+  flag: string;
   description: string;
   image: string;
-  badge?: string;
+  highlight?: boolean;
 }
 
-const menuItems: MenuItem[] = [
+const burgers: MenuItem[] = [
   {
     id: 1,
-    name: 'El Pibe de Oro',
-    description: 'Blend 180g, provolone, chimichurri, maionese de alho no pão brioche.',
+    name: 'O Messi',
+    flag: 'AR',
+    description: 'Medalhao de carne · alface · tomate · ovo · queijo prato.',
     image: '/images/burger-pibe.jpg',
-    badge: '🇦🇷',
   },
   {
     id: 2,
-    name: 'O Rei Pelé',
-    description: 'Blend 180g, cheddar, bacon, cebola caramelizada no pão australiano.',
+    name: 'O Rei Pele',
+    flag: 'BR',
+    description: 'Medalhao de carne · queijo cheddar · bacon · cebola caramelizada.',
     image: '/images/burger-rei.jpg',
-    badge: '🇧🇷',
   },
   {
     id: 3,
-    name: 'Hermanos Unidos',
-    description: 'Blend 200g, queijo prato, molho campanha, farofa de bacon no pão de batata.',
-    image: '/images/burger-hermanos.jpg',
-    badge: '🤝',
+    name: 'Argenburguer Premium',
+    flag: 'STAR',
+    description:
+      'Medalhao de carne · provolone grelhado · rucula · cebola caramelizada · ovo · chimichurri.',
+    image: '/images/premium.jpg',
+    highlight: true,
   },
   {
     id: 4,
-    name: 'Combo Superclássico',
-    description: 'Burger (à escolha) + batata frita + refri.',
-    image: '/images/combo-superclassico.jpg',
-    badge: '⭐',
+    name: 'Sanduiche Chori Louco',
+    flag: 'HOT',
+    description:
+      'Chourico · provolone grelhado · alface · tomate · chimichurri · molho crioulo.',
+    image: '/images/chori-louco.jpg',
   },
   {
     id: 5,
-    name: 'Batata Frita do Messi',
-    description: 'Com páprica e maionese da casa.',
-    image: '/images/batata-messi.jpg',
-    badge: '🍟',
+    name: 'Bandeja Salchi Power',
+    flag: 'FRY',
+    description: 'Batata frita · linguica · queijo cheddar · bacon.',
+    image: '/images/salchi-power.jpg',
   },
   {
     id: 6,
-    name: 'Anéis de Cebola',
-    description: 'Crocantes, com molho barbecue.',
-    image: '/images/aneis-cebola.jpg',
-    badge: '🧅',
+    name: 'Kids Surpresa',
+    flag: 'GIFT',
+    description:
+      'Medalhao de carne · presumido · queijo prato · batata doce frita · suco + brinquedo especial!',
+    image: '/images/kids-surpresa.jpg',
   },
 ];
 
-export function MenuGridSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+const sides = [
+  {
+    id: 7,
+    name: 'Batatas Fritas — Pequena',
+    description: '300 gramas de batatas fritas crocantes.',
+    image: '/images/batata-messi.jpg',
+  },
+  {
+    id: 8,
+    name: 'Batatas Fritas — Grande',
+    description: '500 gramas de batatas fritas crocantes.',
+    image: '/images/batata-messi.jpg',
+  },
+];
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Heading animation
-      gsap.fromTo(
-        headingRef.current,
-        { x: '-8vw', opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: headingRef.current,
-            start: 'top 80%',
-            end: 'top 55%',
-            scrub: 1,
-          },
-        }
-      );
+const flagLabel: Record<string, string> = {
+  AR: 'Argentina',
+  BR: 'Brasil',
+  STAR: 'Destaque',
+  HOT: 'Especial',
+  FRY: 'Combo',
+  GIFT: 'Kids',
+};
 
-      // Cards animation
-      cardsRef.current.forEach((card, index) => {
-        if (!card) return;
-        gsap.fromTo(
-          card,
-          { y: '10vh', rotate: -2, scale: 0.96, opacity: 0 },
-          {
-            y: 0,
-            rotate: 0,
-            scale: 1,
-            opacity: 1,
-            duration: 0.6,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 85%',
-              end: 'top 60%',
-              scrub: 1,
-            },
-            delay: index * 0.08,
-          }
-        );
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
+function ProductCard({ item }: { item: MenuItem }) {
   return (
-    <section
-      ref={sectionRef}
-      id="cardapio"
-      className="relative w-full py-20 lg:py-28 bg-off-white"
+    <div
+      className={`relative bg-zinc-900 rounded-2xl overflow-hidden shadow-lg flex flex-col ${
+        item.highlight ? 'ring-2 ring-yellow-400' : ''
+      }`}
     >
-      <div className="w-full px-6 lg:px-12">
-        {/* Heading */}
-        <div ref={headingRef} className="mb-12">
-          <h2 className="font-heading font-black text-4xl lg:text-5xl text-cobalt uppercase tracking-tight">
-            ESCOLHA SEU TIME
+      {item.highlight && (
+        <div className="absolute top-3 left-3 z-10 bg-yellow-400 text-zinc-950 text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full">
+          Mais Pedido
+        </div>
+      )}
+      <div className="relative h-52 sm:h-56 overflow-hidden bg-zinc-800">
+        <img
+          src={item.image}
+          alt={item.name}
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 to-transparent" />
+        <div className="absolute bottom-3 right-3 bg-zinc-900/80 text-white text-xs font-bold px-2 py-1 rounded-full">
+          {flagLabel[item.flag]}
+        </div>
+      </div>
+
+      <div className="p-5 flex flex-col gap-3 flex-1">
+        <h3 className="font-heading font-black text-lg text-white uppercase leading-tight">
+          {item.name}
+        </h3>
+        <p className="text-zinc-400 text-sm leading-relaxed flex-1">{item.description}</p>
+        <a
+          href={IFOOD_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 w-full text-center bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-sm uppercase tracking-wider py-3 rounded-xl transition-all"
+        >
+          Pedir no iFood
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function SideCard({ item }: { item: (typeof sides)[0] }) {
+  return (
+    <div className="bg-zinc-900 rounded-2xl overflow-hidden shadow-lg flex flex-col sm:flex-row items-stretch">
+      <div className="w-full sm:w-36 h-40 sm:h-auto overflow-hidden bg-zinc-800 flex-shrink-0">
+        <img
+          src={item.image}
+          alt={item.name}
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+      <div className="p-5 flex flex-col justify-between gap-3 flex-1">
+        <div>
+          <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Acompanhamento</p>
+          <h3 className="font-heading font-black text-base text-white uppercase leading-tight">
+            {item.name}
+          </h3>
+          <p className="text-zinc-400 text-sm mt-1">{item.description}</p>
+        </div>
+        <a
+          href={IFOOD_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full text-center bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-sm uppercase tracking-wider py-3 rounded-xl transition-all"
+        >
+          Pedir no iFood
+        </a>
+      </div>
+    </div>
+  );
+}
+
+export function MenuGridSection() {
+  return (
+    <section id="cardapio" className="bg-zinc-950 py-16 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-10">
+          <p className="text-yellow-400 font-black text-xs uppercase tracking-widest mb-2">
+            Nossos destaques
+          </p>
+          <h2 className="font-heading font-black text-4xl sm:text-5xl text-white uppercase">
+            NOSSO CARDAPIO
           </h2>
-          <p className="text-gray-600 text-lg mt-3 max-w-xl">
-            Cada burger é uma homenagem. Todos são grelhados na brasa.
+          <p className="text-zinc-400 mt-3 text-base max-w-md mx-auto">
+            Tudo grelhado na hora. Clique em qualquer item e peca pelo iFood.
           </p>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {menuItems.map((item, index) => (
-            <div
-              key={item.id}
-              ref={(el) => { cardsRef.current[index] = el; }}
-              className="group relative bg-white rounded-3xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 cursor-pointer"
-            >
-              {/* Image */}
-              <div className="relative h-56 lg:h-64 overflow-hidden">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                {/* Badge */}
-                {item.badge && (
-                  <div className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center text-xl shadow-lg">
-                    {item.badge}
-                  </div>
-                )}
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="font-heading font-bold text-xl text-cobalt mb-2">
-                  {item.name}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-
-              {/* Hover accent */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-green-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+          {burgers.map((item) => (
+            <ProductCard key={item.id} item={item} />
           ))}
+        </div>
+
+        <div className="mt-6">
+          <h3 className="font-heading font-black text-xl text-white uppercase mb-4 text-center">
+            Mais Opcoes
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {sides.map((item) => (
+              <SideCard key={item.id} item={item} />
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-12 text-center">
+          <a
+            href={IFOOD_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-base uppercase tracking-wider px-10 py-5 rounded-full transition-all shadow-2xl"
+            style={{ boxShadow: '0 6px 30px rgba(220,38,38,0.5)' }}
+          >
+            Ver cardapio completo no iFood
+          </a>
         </div>
       </div>
     </section>

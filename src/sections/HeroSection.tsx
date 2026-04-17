@@ -1,209 +1,52 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Button } from '@/components/ui/button';
-import { ChevronRight, Utensils } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
+const IFOOD_URL = 'https://www.ifood.com.br/delivery/saquarema-rj/argenburguer-vilatur/a904738d-556b-4e20-b1b1-b63444e84e07?UTM_Medium=share';
+const WA_URL = 'https://wa.me/5522998725280';
 
 export function HeroSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
-  const burgerRef = useRef<HTMLImageElement>(null);
-  const subheadRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const flagBrazilRef = useRef<HTMLDivElement>(null);
-  const flagArgentinaRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Initial load animation
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-      tl.fromTo(
-        headlineRef.current?.querySelectorAll('.headline-word') || [],
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.08, duration: 0.8 }
-      )
-        .fromTo(
-          burgerRef.current,
-          { scale: 0.9, y: 80, opacity: 0 },
-          { scale: 1, y: 0, opacity: 1, duration: 0.9 },
-          '-=0.5'
-        )
-        .fromTo(
-          [flagBrazilRef.current, flagArgentinaRef.current],
-          { scale: 0.7, opacity: 0 },
-          { scale: 1, opacity: 1, stagger: 0.15, duration: 0.6 },
-          '-=0.6'
-        )
-        .fromTo(
-          subheadRef.current,
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.6 },
-          '-=0.4'
-        )
-        .fromTo(
-          ctaRef.current,
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.5 },
-          '-=0.3'
-        );
-
-      // Scroll-driven exit animation
-      const scrollTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: '+=130%',
-          pin: true,
-          scrub: 0.6,
-          onLeaveBack: () => {
-            // Reset all elements when scrolling back to top
-            gsap.set([headlineRef.current, burgerRef.current, subheadRef.current, ctaRef.current], {
-              opacity: 1,
-              x: 0,
-              y: 0,
-              scale: 1,
-            });
-          },
-        },
-      });
-
-      // Exit animations (70% - 100%)
-      scrollTl
-        .fromTo(
-          headlineRef.current,
-          { x: 0, opacity: 1 },
-          { x: '-18vw', opacity: 0, ease: 'power2.in' },
-          0.7
-        )
-        .fromTo(
-          burgerRef.current,
-          { y: 0, scale: 1, opacity: 1 },
-          { y: '22vh', scale: 1.06, opacity: 0, ease: 'power2.in' },
-          0.7
-        )
-        .fromTo(
-          [subheadRef.current, ctaRef.current],
-          { opacity: 1 },
-          { opacity: 0, ease: 'power2.in' },
-          0.75
-        )
-        .fromTo(
-          [flagBrazilRef.current, flagArgentinaRef.current],
-          { opacity: 1 },
-          { opacity: 0, ease: 'power2.in' },
-          0.8
-        );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const scrollToCardapio = () => {
-    document.getElementById('cardapio')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const scrollToPedido = () => {
-    document.getElementById('onde-pedir')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full h-screen overflow-hidden bg-cobalt"
-    >
-      {/* Background Image */}
+    <section className="relative w-full min-h-screen flex flex-col items-center justify-center text-center px-4 pt-16 pb-28">
       <div className="absolute inset-0">
-        <img
-          src="/images/stadium-bg.jpg"
-          alt="Stadium crowd"
-          className="w-full h-full object-cover opacity-40"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-cobalt/60 via-cobalt/40 to-cobalt/80" />
+        <img src="/images/stadium-bg.jpg" alt="Argenburguer" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-zinc-950/78" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 w-full h-full flex flex-col justify-center px-6 lg:px-12">
-        <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-8 items-center">
-          {/* Left Column - Text */}
-          <div className="order-2 lg:order-1">
-            <div ref={headlineRef} className="mb-6">
-              <h1 className="font-heading font-black text-white uppercase leading-[0.95] tracking-tight">
-                <span className="headline-word block text-3xl sm:text-4xl lg:text-5xl xl:text-6xl">
-                  O MELHOR DO
-                </span>
-                <span className="headline-word block text-4xl sm:text-5xl lg:text-6xl xl:text-7xl mt-1">
-                  BRASIL E DA
-                </span>
-                <span className="headline-word block text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-brazil-yellow mt-1">
-                  ARGENTINA
-                </span>
-                <span className="headline-word block text-3xl sm:text-4xl lg:text-5xl xl:text-6xl mt-1">
-                  NO SEU BURGER
-                </span>
-              </h1>
-            </div>
-
-            <p
-              ref={subheadRef}
-              className="text-white/90 text-base lg:text-lg max-w-md mb-8 leading-relaxed"
-            >
-              Hambúrguer artesanal, grelhado na brasa, com ingredientes de verdade
-              e o tempero da rivalidade mais gostosa do mundo.
-            </p>
-
-            <div ref={ctaRef} className="flex flex-wrap gap-4">
-              <Button
-                onClick={scrollToCardapio}
-                size="lg"
-                className="bg-green-500 hover:bg-green-600 text-white font-bold rounded-full px-8 py-6 text-base uppercase tracking-wider transition-all hover:scale-105 hover:shadow-lg"
-              >
-                <Utensils className="w-5 h-5 mr-2" />
-                Ver Cardápio
-              </Button>
-              <Button
-                onClick={scrollToPedido}
-                variant="outline"
-                size="lg"
-                className="border-2 border-white/30 text-white hover:bg-white/10 font-bold rounded-full px-8 py-6 text-base uppercase tracking-wider transition-all"
-              >
-                Fazer Pedido
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Right Column - Burger */}
-          <div className="order-1 lg:order-2 flex justify-center items-center relative">
-            <img
-              ref={burgerRef}
-              src="/images/hero-burger.png"
-              alt="Delicious burger"
-              className="w-full max-w-md lg:max-w-lg xl:max-w-xl animate-float drop-shadow-2xl"
-            />
-
-            {/* Decorative Flags */}
-            <div
-              ref={flagBrazilRef}
-              className="absolute top-0 right-0 lg:right-10 animate-sway"
-            >
-              <div className="w-16 h-16 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-green-500 via-yellow-400 to-green-600 flex items-center justify-center shadow-xl">
-                <span className="text-2xl lg:text-4xl">🇧🇷</span>
-              </div>
-            </div>
-            <div
-              ref={flagArgentinaRef}
-              className="absolute bottom-10 right-5 lg:right-0 animate-sway"
-              style={{ animationDelay: '0.5s' }}
-            >
-              <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-full bg-gradient-to-br from-sky-400 via-white to-sky-400 flex items-center justify-center shadow-xl">
-                <span className="text-2xl lg:text-3xl">🇦🇷</span>
-              </div>
-            </div>
-          </div>
+      <div className="relative z-10 max-w-2xl mx-auto w-full">
+        <div className="inline-block bg-yellow-400 text-zinc-950 font-black text-xs uppercase tracking-widest px-4 py-1.5 rounded-full mb-6">
+          Vilatur &middot; Saquarema &middot; RJ
         </div>
+
+        <h1 className="font-heading font-black text-6xl sm:text-7xl lg:text-8xl text-white uppercase leading-none mb-3">
+          ARGEN<br />
+          <span className="text-yellow-400">BURGUER</span>
+        </h1>
+
+        <p className="text-white/80 text-lg sm:text-xl mb-10 font-medium">
+          Sabores irresist&iacute;veis com pedido r&aacute;pido pelo iFood
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a
+            href={IFOOD_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-base uppercase tracking-wider px-10 py-5 rounded-full transition-all"
+            style={{ boxShadow: '0 6px 30px rgba(220,38,38,0.5)' }}
+          >
+            Pedir no iFood
+          </a>
+          <a
+            href={WA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto bg-green-600 hover:bg-green-500 active:scale-95 text-white font-bold text-base uppercase tracking-wider px-10 py-5 rounded-full transition-all"
+          >
+            Falar no WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 text-sm text-center">
+        <div>Ver card&aacute;pio</div>
+        <div className="text-xl animate-bounce">&#8595;</div>
       </div>
     </section>
   );

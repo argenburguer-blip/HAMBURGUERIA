@@ -1,116 +1,68 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ChevronUp } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
+const IFOOD_URL = 'https://www.ifood.com.br/delivery/saquarema-rj/argenburguer-vilatur/a904738d-556b-4e20-b1b1-b63444e84e07?UTM_Medium=share';
+const WA_URL = 'https://wa.me/5522998725280';
+const INSTAGRAM_URL = 'https://www.instagram.com/argenburguervilatur?igsh=cjR0cnNnbHdnMTIx';
 
 export function ClosingSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const stampRef = useRef<HTMLHeadingElement>(null);
-  const sublineRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const scrollTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: '+=120%',
-          pin: true,
-          scrub: 0.6,
-        },
-      });
-
-      // Entrance (0% - 30%)
-      scrollTl
-        .fromTo(
-          stampRef.current,
-          { scale: 1.25, y: '40vh', opacity: 0 },
-          { scale: 1, y: 0, opacity: 1, ease: 'none' },
-          0
-        )
-        .fromTo(
-          sublineRef.current,
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, ease: 'none' },
-          0.15
-        )
-        .fromTo(
-          ctaRef.current,
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, ease: 'none' },
-          0.2
-        );
-
-      // Exit (70% - 100%)
-      scrollTl
-        .fromTo(
-          stampRef.current,
-          { opacity: 1, scale: 1 },
-          { opacity: 0, scale: 1.06, ease: 'power2.in' },
-          0.7
-        )
-        .fromTo(
-          [sublineRef.current, ctaRef.current],
-          { opacity: 1 },
-          { opacity: 0, ease: 'power2.in' },
-          0.75
-        );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full h-screen overflow-hidden bg-cobalt"
-    >
-      {/* Background Image */}
-      <div className="absolute inset-0">
-        <img
-          src="/images/stadium-bg.jpg"
-          alt="Stadium crowd"
-          className="w-full h-full object-cover opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-cobalt/70 via-cobalt/50 to-cobalt/80" />
+    <footer className="bg-zinc-900 pb-28">
+      <div className="relative bg-red-600 py-16 px-4 sm:px-6 text-center overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <img src="/images/stadium-bg.jpg" alt="" className="w-full h-full object-cover" />
+        </div>
+        <div className="relative z-10 max-w-2xl mx-auto">
+          <p className="text-red-200 font-bold text-sm uppercase tracking-widest mb-3">
+            Bateu aquela fome?
+          </p>
+          <h2 className="font-heading font-black text-4xl sm:text-5xl text-white uppercase leading-tight mb-4">
+            FICOU COM<br />VONTADE?
+          </h2>
+          <p className="text-red-100 text-lg mb-8">
+            Fa&ccedil;a seu pedido agora pelo iFood.
+          </p>
+          <a
+            href={IFOOD_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-white text-red-600 font-black text-base uppercase tracking-wider px-10 py-5 rounded-full transition-all hover:bg-red-50 active:scale-95 shadow-2xl"
+          >
+            Pedir no iFood agora
+          </a>
+        </div>
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6">
-        <h2
-          ref={stampRef}
-          className="font-heading font-black text-7xl sm:text-8xl lg:text-9xl xl:text-[12rem] text-brazil-yellow uppercase tracking-tight text-center"
-          style={{
-            WebkitTextStroke: '3px #0B0F1C',
-            textShadow: '0 8px 32px rgba(0,0,0,0.4)',
-          }}
-        >
-          VILATUR
-        </h2>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <span className="font-heading font-black text-xl text-white">
+              ARGEN<span className="text-yellow-400">BURGUER</span>
+            </span>
+            <p className="text-zinc-500 text-sm mt-1">
+              Av. Beira Mar, 2447 &mdash; Local 3 &middot; Vilatur, Saquarema &mdash; RJ
+            </p>
+          </div>
 
-        <p
-          ref={sublineRef}
-          className="text-white/90 text-xl lg:text-2xl mt-6 font-medium tracking-wide"
-        >
-          Saquarema — RJ
-        </p>
+          <div className="flex items-center gap-3">
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer"
+              className="px-4 py-2 bg-zinc-800 hover:bg-pink-600 rounded-full text-white text-xs font-bold uppercase tracking-wider transition-colors">
+              Instagram
+            </a>
+            <a href={WA_URL} target="_blank" rel="noopener noreferrer"
+              className="px-4 py-2 bg-zinc-800 hover:bg-green-600 rounded-full text-white text-xs font-bold uppercase tracking-wider transition-colors">
+              WhatsApp
+            </a>
+            <a href={IFOOD_URL} target="_blank" rel="noopener noreferrer"
+              className="px-4 py-2 bg-zinc-800 hover:bg-red-600 rounded-full text-white text-xs font-bold uppercase tracking-wider transition-colors">
+              iFood
+            </a>
+          </div>
+        </div>
 
-        <button
-          ref={ctaRef}
-          onClick={scrollToTop}
-          className="mt-12 flex items-center gap-2 text-white/70 hover:text-white transition-colors group"
-        >
-          <span className="text-sm uppercase tracking-wider">Voltar ao topo</span>
-          <ChevronUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
-        </button>
+        <div className="mt-8 border-t border-zinc-800 pt-6 text-center">
+          <p className="text-zinc-600 text-xs">
+            &copy; 2026 ArgenBurguer Vilatur &middot; Brasil e Argentina unidos pelo sabor
+          </p>
+        </div>
       </div>
-    </section>
+    </footer>
   );
 }

@@ -1,90 +1,35 @@
-import { useEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navigation } from '@/components/Navigation';
 import { HeroSection } from '@/sections/HeroSection';
-import { MenuHeaderSection } from '@/sections/MenuHeaderSection';
 import { MenuGridSection } from '@/sections/MenuGridSection';
 import { StorySection } from '@/sections/StorySection';
 import { OrderSection } from '@/sections/OrderSection';
-import { ContactSection } from '@/sections/ContactSection';
 import { ClosingSection } from '@/sections/ClosingSection';
 
-gsap.registerPlugin(ScrollTrigger);
+const IFOOD_URL =
+  'https://www.ifood.com.br/delivery/saquarema-rj/argenburguer-vilatur/a904738d-556b-4e20-b1b1-b63444e84e07?UTM_Medium=share';
 
 function App() {
-  useEffect(() => {
-    // Wait for all ScrollTriggers to be created
-    const timer = setTimeout(() => {
-      const pinned = ScrollTrigger.getAll()
-        .filter((st) => st.vars.pin)
-        .sort((a, b) => a.start - b.start);
-
-      const maxScroll = ScrollTrigger.maxScroll(window);
-
-      if (!maxScroll || pinned.length === 0) return;
-
-      // Build ranges and snap targets from pinned sections
-      const pinnedRanges = pinned.map((st) => ({
-        start: st.start / maxScroll,
-        end: (st.end ?? st.start) / maxScroll,
-        center: (st.start + ((st.end ?? st.start) - st.start) * 0.5) / maxScroll,
-      }));
-
-      // Global snap configuration
-      ScrollTrigger.create({
-        snap: {
-          snapTo: (value: number) => {
-            // Check if within any pinned range (with buffer)
-            const inPinned = pinnedRanges.some(
-              (r) => value >= r.start - 0.02 && value <= r.end + 0.02
-            );
-
-            if (!inPinned) return value; // Flowing section: free scroll
-
-            // Find nearest pinned center
-            const target = pinnedRanges.reduce(
-              (closest, r) =>
-                Math.abs(r.center - value) < Math.abs(closest - value)
-                  ? r.center
-                  : closest,
-              pinnedRanges[0]?.center ?? 0
-            );
-
-            return target;
-          },
-          duration: { min: 0.15, max: 0.35 },
-          delay: 0,
-          ease: 'power2.out',
-        },
-      });
-
-      // Refresh ScrollTrigger after setup
-      ScrollTrigger.refresh();
-    }, 100);
-
-    return () => {
-      clearTimeout(timer);
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-    };
-  }, []);
-
   return (
-    <div className="relative">
-      {/* Grain Overlay */}
-      <div className="grain-overlay" />
+    <div className="relative bg-zinc-950">
+      {/* Floating iFood Button */}
+      <a
+        href={IFOOD_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Pedir no iFood"
+        className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-red-600 text-white font-black text-sm uppercase tracking-widest px-7 py-4 rounded-full transition-all hover:bg-red-500 active:scale-95 whitespace-nowrap"
+        style={{ boxShadow: '0 6px 30px rgba(220,38,38,0.55)' }}
+      >
+        🛵 Pedir no iFood
+      </a>
 
-      {/* Navigation */}
       <Navigation />
 
-      {/* Main Content */}
-      <main className="relative">
+      <main>
         <HeroSection />
-        <MenuHeaderSection />
         <MenuGridSection />
         <StorySection />
         <OrderSection />
-        <ContactSection />
         <ClosingSection />
       </main>
     </div>
